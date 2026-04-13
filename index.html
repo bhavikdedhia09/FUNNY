@@ -1,227 +1,237 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Cyber Hunt Pro Ultimate</title>
+<title>Avengers AI Game Lab</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-body {
-  background: radial-gradient(circle, #1a0000, #000);
-  color: #ffcc00;
-  font-family: monospace;
-  text-align: center;
+body{
+font-family: Arial, sans-serif;
+margin:0;
+background: radial-gradient(circle at top,#2b0000,#000);
+color:white;
 }
-h1 { text-shadow: 0 0 15px red; }
 
-.grid {
-  display: grid;
-  grid-template-columns: repeat(10, 45px);
-  gap: 5px;
-  justify-content: center;
-  margin: 20px;
+header{
+text-align:center;
+padding:30px;
+background:linear-gradient(90deg,#7a0000,#b30000,#ffcc00);
+color:black;
+font-size:32px;
+font-weight:bold;
+letter-spacing:2px;
 }
-.cell {
-  width:45px;height:45px;
-  border:1px solid #ff3b3b;
-  display:flex;align-items:center;justify-content:center;
-  cursor:pointer;background:#0a0a0a;
-}
-.selected { background:#00ffff;color:black;}
-.found { background:#ffcc00;color:black;}
 
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:20px;
+padding:30px;
+}
+
+.card{
+background:rgba(255,0,0,0.08);
+border:1px solid #ffcc00;
+border-radius:12px;
+padding:20px;
+text-align:center;
+box-shadow:0 0 15px rgba(255,0,0,0.4);
+}
+
+button{
+padding:10px 16px;
+background:#ffcc00;
+border:none;
+border-radius:8px;
+cursor:pointer;
+font-weight:bold;
+}
+
+button:hover{
+background:white;
+}
+
+#gameArea{
+padding:30px;
+border-top:2px solid #ffcc00;
+}
+
+.popup{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.8);
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
+.popup-content{
+background:#111;
+border:2px solid #ffcc00;
+padding:40px;
+border-radius:12px;
+max-width:500px;
+text-align:center;
+}
+
+.close{
+margin-top:20px;
+}
 </style>
 </head>
 
 <body>
 
-<h1>🤖 IRON CYBER HUNT ULTIMATE</h1>
+<header>AVENGERS AI GAME LAB</header>
 
-<div>
-Level: <span id="level">easy</span> |
-⏱ <span id="timer">60</span>s |
-🏆 <span id="score">0</span>
+<div id="welcomePopup" class="popup">
+<div class="popup-content">
+<h2>Welcome Hero</h2>
+<p id="quote"></p>
+<button class="close" onclick="closePopup()">Enter Game Lab</button>
+</div>
 </div>
 
-<button onclick="startGame()">Start / Restart</button>
+<div class="grid" id="gameGrid"></div>
 
-<div id="grid" class="grid"></div>
-<div id="wordList"></div>
+<div id="gameArea"></div>
 
 <script>
-const SIZE=10;
 
-const LEVELS=["easy","medium","hard","expert","insane"];
+const quotes=[
+"Discipline beats motivation.",
+"Small progress every day creates big results.",
+"Your future is built by what you do today.",
+"Focus on progress not perfection.",
+"Cyber security begins with awareness.",
+"Think like a hacker to defend like a hero.",
+"Consistency builds mastery.",
+"Calm mind solves complex problems.",
+"Learning never stops in technology.",
+"Your mindset defines your success."
+];
 
-const WORDS={
-easy:["HACK","DATA","BUG","SAFE"],
-medium:["MALWARE","PHISHING","ENCRYPT"],
-hard:["RANSOMWARE","FIREWALL","EXPLOIT"],
-expert:["STEGANOGRAPHY","HASHFUNCTION"],
-insane:["ADVANCEDPERSISTENTTHREAT"]
+const today=new Date().getDate();
+document.getElementById("quote").innerText=quotes[today % quotes.length];
+
+function closePopup(){
+document.getElementById("welcomePopup").style.display="none";
+}
+
+const games=[
+"Tic Tac Toe","Reaction Test","Typing Speed","Number Guess",
+"Memory Flip","Color Click","Aim Trainer","Math Quiz",
+"Word Scramble","Binary Guess","Password Builder",
+"Phishing Detector","Maze Runner","Focus Timer",
+"Emoji Guess","Motivation Spinner","Pixel Painter",
+"Pattern Match","Speed Clicker","Shape Fit",
+"AI Story Prompt","Breathing Trainer","Gratitude Match",
+"Logic Puzzle","Sequence Memory","Cyber Quiz",
+"Network Defender","Malware Guess","Puzzle Slider","Idea Generator"
+];
+
+const grid=document.getElementById("gameGrid");
+
+games.forEach((g,i)=>{
+let div=document.createElement("div");
+div.className="card";
+div.innerHTML="<h3>"+g+"</h3><button onclick='launchGame("+i+")'>Play</button>";
+grid.appendChild(div);
+});
+
+function launchGame(id){
+
+let area=document.getElementById("gameArea");
+
+if(id==0){
+area.innerHTML=`
+<h2>Tic Tac Toe</h2>
+<div id="board"></div>
+`;
+
+let board=document.getElementById("board");
+let cells=[];
+let turn="X";
+
+for(let i=0;i<9;i++){
+let c=document.createElement("button");
+c.style.width="60px";
+c.style.height="60px";
+c.style.margin="5px";
+c.onclick=function(){
+if(c.innerText==""){
+c.innerText=turn;
+turn=turn=="X"?"O":"X";
+}
+}
+board.appendChild(c);
+cells.push(c);
+}
+
+}
+
+else if(id==1){
+
+area.innerHTML=`
+<h2>Reaction Speed Test</h2>
+<button id="start">Start</button>
+<p id="result"></p>
+`;
+
+let start=document.getElementById("start");
+let result=document.getElementById("result");
+
+start.onclick=function(){
+result.innerText="Wait...";
+let delay=Math.random()*3000+1000;
+
+setTimeout(()=>{
+let startTime=Date.now();
+result.innerText="CLICK NOW!";
+
+start.onclick=function(){
+let reaction=Date.now()-startTime;
+result.innerText="Reaction: "+reaction+" ms";
+};
+},delay);
 };
 
-let levelIndex=0;
-let grid=[],selected=[],words=[],foundWords=[];
-let score=0,timer=60,interval;
-let dragging=false;
-
-const dirs=[[0,1],[1,0],[1,1],[-1,1]];
-
-function shuffle(a){return [...a].sort(()=>Math.random()-0.5);}
-
-function createGrid(){
- grid=Array.from({length:SIZE},()=>Array(SIZE).fill(""));
 }
 
-function placeWord(word){
- let tries=0;
- while(tries<100){
-  tries++;
-  let d=dirs[Math.floor(Math.random()*dirs.length)];
-  let r=Math.floor(Math.random()*SIZE);
-  let c=Math.floor(Math.random()*SIZE);
-  let ok=true;
+else if(id==2){
 
-  for(let i=0;i<word.length;i++){
-   let nr=r+i*d[0],nc=c+i*d[1];
-   if(nr<0||nc<0||nr>=SIZE||nc>=SIZE||(grid[nr][nc]&&grid[nr][nc]!=word[i])){
-    ok=false;break;
-   }
-  }
+area.innerHTML=`
+<h2>Typing Speed Test</h2>
+<p>Type: cybersecurity</p>
+<input id="typeBox"/>
+<p id="typeResult"></p>
+`;
 
-  if(ok){
-   for(let i=0;i<word.length;i++){
-    let nr=r+i*d[0],nc=c+i*d[1];
-    grid[nr][nc]=word[i];
-   }
-   return true;
-  }
- }
- return false;
+let box=document.getElementById("typeBox");
+let start=Date.now();
+
+box.onkeyup=function(){
+if(box.value=="cybersecurity"){
+let time=(Date.now()-start)/1000;
+document.getElementById("typeResult").innerText="Time: "+time+" seconds";
+}
 }
 
-function fillRandom(){
- let chars="ABCDEFGHIJKLMNOPQRSTUVWXYZ";
- for(let i=0;i<SIZE;i++){
-  for(let j=0;j<SIZE;j++){
-   if(!grid[i][j]){
-    grid[i][j]=chars[Math.floor(Math.random()*chars.length)];
-   }
-  }
- }
 }
 
-function render(){
- let g=document.getElementById("grid");
- g.innerHTML="";
- grid.forEach((row,r)=>{
-  row.forEach((l,c)=>{
-   let cell=document.createElement("div");
-   cell.className="cell";
-   cell.textContent=l;
+else{
 
-   cell.onmousedown=()=>startSel(cell,r,c);
-   cell.onmouseover=()=>dragSel(cell,r,c);
+area.innerHTML="<h2>"+games[id]+"</h2><p>Mini relaxing game concept placeholder. Expand with custom logic.</p>";
 
-   g.appendChild(cell);
-  });
- });
 }
 
-function startSel(cell,r,c){
- dragging=true;
- selected=[{r,c,cell}];
- cell.classList.add("selected");
 }
 
-function dragSel(cell,r,c){
- if(dragging){
-  selected.push({r,c,cell});
-  cell.classList.add("selected");
- }
-}
-
-document.addEventListener("mouseup",endSel);
-
-function endSel(){
- if(!dragging) return;
- dragging=false;
-
- let word=selected.map(x=>grid[x.r][x.c]).join("");
- let rev=word.split("").reverse().join("");
-
- if(words.includes(word)||words.includes(rev)){
-   let actual = words.includes(word)?word:rev;
-
-   if(!foundWords.includes(actual)){
-     foundWords.push(actual);
-     score+=10;
-     document.getElementById("score").innerText=score;
-     selected.forEach(x=>x.cell.classList.add("found"));
-   }
- }
-
- selected.forEach(x=>x.cell.classList.remove("selected"));
- selected=[];
- checkLevelComplete();
-}
-
-function checkLevelComplete(){
- if(foundWords.length===words.length){
-   levelIndex++;
-   if(levelIndex>=LEVELS.length){
-     alert("🎉 You completed ALL levels! Final Score: "+score);
-     resetGame();
-     return;
-   }
-   alert("🚀 Level Up!");
-   loadLevel();
- }
-}
-
-function startTimer(){
- clearInterval(interval);
- interval=setInterval(()=>{
-  timer--;
-  document.getElementById("timer").innerText=timer;
-
-  if(timer<=0){
-   clearInterval(interval);
-   alert("❌ Failed! Score: "+score);
-   resetGame();
-  }
- },1000);
-}
-
-function loadLevel(){
- let level=LEVELS[levelIndex];
- document.getElementById("level").innerText=level;
-
- words=shuffle(WORDS[level]).slice(0,5);
- foundWords=[];
-
- createGrid();
- words.forEach(w=>placeWord(w));
- fillRandom();
-
- document.getElementById("wordList").innerText=words.join(", ");
- render();
-}
-
-function startGame(){
- score=0;
- timer=60;
- levelIndex=0;
- document.getElementById("score").innerText=score;
- loadLevel();
- startTimer();
-}
-
-function resetGame(){
- startGame();
-}
-
-startGame();
 </script>
 
 </body>
