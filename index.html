@@ -1,241 +1,129 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Interactive Games & Health Hub</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Avengers Arcade & Health Hub</title>
 <style>
-body{
-font-family:Arial, sans-serif;
-background:#0b0f19;
-color:white;
-text-align:center;
-margin:0;
-padding:0;
-}
-header{
-background:#111a2e;
-padding:20px;
-font-size:28px;
-}
-section{
-padding:30px;
-border-bottom:1px solid #1f2a44;
-}
-button{
-padding:10px 18px;
-margin:5px;
-border:none;
-border-radius:6px;
-cursor:pointer;
-font-weight:bold;
-}
-.game-btn{background:#00ffd5;color:black;}
-.board{
-display:grid;
-grid-template-columns:repeat(3,80px);
-gap:5px;
-justify-content:center;
-margin:auto;
-}
-.cell{
-width:80px;height:80px;
-background:#1a2238;
-display:flex;
-align-items:center;
-justify-content:center;
-font-size:30px;
-cursor:pointer;
-}
-.memory-grid{
-display:grid;
-grid-template-columns:repeat(4,80px);
-gap:10px;
-justify-content:center;
-}
-.card{
-height:80px;
-background:#1a2238;
-display:flex;
-align-items:center;
-justify-content:center;
-font-size:28px;
-cursor:pointer;
-}
-table{margin:auto;border-collapse:collapse;}
-td{border:1px solid #888;}
-td input{
-width:40px;height:40px;
-text-align:center;font-size:18px;
-}
-iframe{border:none;margin-top:20px;}
+:root{--bg:#0b1020;--card:#121a33;--accent:#e62429;--accent2:#00d4ff;--text:#eef2ff;--muted:#b7c0e0;--good:#4ade80;--warn:#fbbf24}
+*{box-sizing:border-box} body{margin:0;font-family:Arial,Helvetica,sans-serif;background:radial-gradient(circle at top,#1d2a57 0%,#0b1020 55%,#050816 100%);color:var(--text)}
+header{padding:24px 16px;text-align:center;border-bottom:1px solid rgba(255,255,255,.08)}
+h1{margin:0;font-size:clamp(28px,4vw,54px);letter-spacing:1px;color:#fff;text-shadow:0 0 18px rgba(230,36,41,.4)}
+header p{margin:8px 0 0;color:var(--muted)}
+main{max-width:1200px;margin:0 auto;padding:18px;display:grid;gap:18px}
+.section{background:linear-gradient(180deg,rgba(18,26,51,.96),rgba(9,14,30,.96));border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:18px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.section h2{margin:0 0 12px;font-size:24px;color:#fff}
+.grid{display:grid;gap:14px}
+.games{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:14px}
+.card h3{margin:0 0 10px;color:#fff}
+button,input{font:inherit}
+button{cursor:pointer;border:none;border-radius:12px;padding:10px 14px;background:var(--accent);color:white;font-weight:700;transition:.2s transform,.2s opacity}
+button:hover{transform:translateY(-1px);opacity:.95}
+button.secondary{background:var(--accent2);color:#04111a}
+button.ghost{background:#24304f}
+#ttt{display:grid;grid-template-columns:repeat(3,78px);gap:8px;justify-content:center;margin:10px 0}
+.tttCell{width:78px;height:78px;font-size:28px;background:#182342;border:1px solid rgba(255,255,255,.08);color:#fff;border-radius:12px}
+#riddleBox{min-height:120px;font-size:18px;line-height:1.45;color:#fff}
+.small{color:var(--muted);font-size:13px}
+#matchGrid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;max-width:360px}
+.matchCell{aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;background:#182342;border:1px solid rgba(255,255,255,.08);border-radius:10px;font-size:18px;cursor:pointer;user-select:none}
+.matchCell.found{background:rgba(74,222,128,.18);border-color:rgba(74,222,128,.55)}
+.healthWrap{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+iframe{width:100%;min-height:640px;border:0;border-radius:14px;background:white}
+#taskOut{min-height:72px;padding:12px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08)}
+.tag{display:inline-block;padding:4px 10px;border-radius:999px;background:rgba(230,36,41,.18);color:#fff;border:1px solid rgba(230,36,41,.35);margin:3px 6px 3px 0;font-size:12px}
 </style>
 </head>
-
 <body>
-
-<header>🎮 Games & 🩺 Health Interactive Hub</header>
-
-<section>
-<h2>Tic Tac Toe</h2>
-<div class="board" id="board"></div>
-<p id="status">Player X Turn</p>
-<button class="game-btn" onclick="restartGame()">Restart</button>
+<header>
+<h1>AVENGERS Arcade & Health Hub</h1>
+<p>Games, health tasks, and fitness tools in one interactive page.</p>
+</header>
+<main>
+<section class="section">
+<h2>10 Games</h2>
+<div class="grid games">
+  <div class="card">
+    <h3>1. Tic Tac Toe</h3>
+    <div id="ttt"></div>
+    <div class="small" id="tttMsg">Player X starts.</div>
+    <div style="margin-top:10px"><button class="ghost" onclick="resetTtt()">Reset Game</button></div>
+  </div>
+  <div class="card">
+    <h3>2. Math Riddle</h3>
+    <div id="riddleBox"></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+      <button onclick="showAnswer()">Show Answer</button>
+      <button class="secondary" onclick="nextRiddle()">Next Riddle</button>
+    </div>
+    <div class="small" id="riddleAns"></div>
+  </div>
+  <div class="card">
+    <h3>3. Match Finder</h3>
+    <div class="small">Find the Avengers pair in the 5×5 grid.</div>
+    <div id="matchGrid"></div>
+    <div class="small" id="matchMsg"></div>
+  </div>
+  <div class="card"><h3>4. Dice Roll</h3><button onclick="rollDice()">Roll Dice</button><div id="diceOut" style="font-size:44px;margin-top:12px">🎲</div></div>
+  <div class="card"><h3>5. Coin Toss</h3><button onclick="tossCoin()">Toss Coin</button><div id="coinOut" style="font-size:28px;margin-top:12px">Click to toss</div></div>
+  <div class="card"><h3>6. Number Guess</h3><input id="guessIn" type="number" placeholder="1-10"><button onclick="guessGame()" style="margin-left:8px">Guess</button><div id="guessMsg" class="small"></div></div>
+  <div class="card"><h3>7. Quick Click</h3><button onclick="startClicker()">Start 10s Timer</button><div id="clickBtnWrap" style="margin-top:10px"></div><div id="clickOut" class="small"></div></div>
+  <div class="card"><h3>8. Memory Flip</h3><button onclick="shuffleMemory()">Shuffle Cards</button><div id="memoryGrid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px"></div></div>
+  <div class="card"><h3>9. Color Pick</h3><button onclick="randomColor()">New Color</button><div id="colorBox" style="height:90px;border-radius:12px;margin-top:10px;background:#222"></div></div>
+  <div class="card"><h3>10. Reaction Tap</h3><button onclick="reactionStart()">Start Reaction Test</button><div id="reactionBox" class="small" style="margin-top:10px"></div></div>
+</div>
 </section>
-
-<section>
-<h2>Match Finder (Memory)</h2>
-<div class="memory-grid" id="memoryGame"></div>
+<section class="section">
+<h2>Health Section</h2>
+<div class="healthWrap">
+  <div class="card">
+    <h3>Get Healthy Task</h3>
+    <button onclick="getHealthyTask()">Get healthy</button>
+    <div id="taskOut" style="margin-top:12px"></div>
+    <div class="small">Tasks are generated from a large non-repeating pool in memory for this session.</div>
+  </div>
+  <div class="card">
+    <h3>Health Calculator</h3>
+    <iframe src="https://www.calculator.net/fitness-and-health-calculator.html" title="Fitness and Health Calculators"></iframe>
+  </div>
+</div>
 </section>
-
-<section>
-<h2>Sudoku Grid</h2>
-<table id="sudoku"></table>
-</section>
-
-<section>
-<h2>Math Riddles</h2>
-<p id="riddle"></p>
-<button class="game-btn" onclick="nextRiddle()">Next Riddle</button>
-</section>
-
-<section>
-<h2>Crossword Mini</h2>
-<p>Clue: Protection from hackers (8 letters)</p>
-<input maxlength="8" id="crossword">
-<button onclick="checkCross()">Check</button>
-<p id="crossResult"></p>
-</section>
-
-<section>
-<h2>Health Habit Generator</h2>
-<button class="game-btn" onclick="healthTask()">Get Healthy Habit</button>
-<p id="task"></p>
-</section>
-
-<section>
-<h2>Health Calculators</h2>
-<p>BMI Calculator</p>
-<iframe src="https://www.calculator.net/bmi-calculator.html" width="100%" height="500"></iframe>
-<p>Calorie Calculator</p>
-<iframe src="https://www.calculator.net/calorie-calculator.html" width="100%" height="500"></iframe>
-</section>
-
+</main>
 <script>
-
-/* TicTacToe */
-let board=["","","","","","","","",""]
-let current="X"
-let active=true
-const boardDiv=document.getElementById("board")
-
-function drawBoard(){
-boardDiv.innerHTML=""
-board.forEach((v,i)=>{
-let d=document.createElement("div")
-d.className="cell"
-d.innerText=v
-d.onclick=()=>move(i)
-boardDiv.appendChild(d)
-})
-}
-drawBoard()
-
-function move(i){
-if(board[i]||!active) return
-board[i]=current
-checkWin()
-current=current==="X"?"O":"X"
-document.getElementById("status").innerText="Player "+current+" Turn"
-drawBoard()
-}
-
-function checkWin(){
-const w=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]
-for(let c of w){
-if(board[c[0]]&&board[c[0]]===board[c[1]]&&board[c[1]]===board[c[2]]){
-document.getElementById("status").innerText="Winner "+board[c[0]]
-active=false
-}
-}
-}
-
-function restartGame(){
-board=["","","","","","","","",""]
-active=true
-current="X"
-drawBoard()
-}
-
-/* Memory Game */
-let icons=["💻","💻","🔐","🔐","🦠","🦠","⚡","⚡"]
-icons.sort(()=>0.5-Math.random())
-const mem=document.getElementById("memoryGame")
-icons.forEach(i=>{
-let c=document.createElement("div")
-c.className="card"
-c.onclick=()=>c.innerText=i
-mem.appendChild(c)
-})
-
-/* Sudoku */
-const sudoku=document.getElementById("sudoku")
-for(let i=0;i<9;i++){
-let row=document.createElement("tr")
-for(let j=0;j<9;j++){
-let cell=document.createElement("td")
-let inp=document.createElement("input")
-inp.maxLength=1
-cell.appendChild(inp)
-row.appendChild(cell)
-}
-sudoku.appendChild(row)
-}
-
-/* Riddles */
-let riddles=[
-"I am an odd number. Remove one letter and I become even.",
-"What three numbers give same result when multiplied or added?",
-"If two’s company and three’s a crowd, what are four and five?",
-"What number increases by 50% when turned upside down?"
-]
-let r=0
-function nextRiddle(){
-document.getElementById("riddle").innerText=riddles[r]
-r=(r+1)%riddles.length
-}
-nextRiddle()
-
-/* Crossword */
-function checkCross(){
-let ans=document.getElementById("crossword").value.toUpperCase()
-if(ans==="FIREWALL"){
-document.getElementById("crossResult").innerText="Correct!"
-}else{
-document.getElementById("crossResult").innerText="Try Again"
-}
-}
-
-/* Health Tasks */
-let tasks=[
-"Drink 2 glasses of water",
-"Walk for 10 minutes",
-"Stretch your back",
-"Eat a fruit today",
-"Take a 5 minute deep breathing break",
-"Sleep at least 7 hours tonight",
-"Reduce screen time for 30 minutes",
-"Do 10 pushups or light exercise",
-"Practice gratitude",
-"Stand and stretch your legs"
-]
-
-function healthTask(){
-let t=Math.floor(Math.random()*tasks.length)
-document.getElementById("task").innerText=tasks[t]
-}
-
+const ttt = document.getElementById('ttt');
+const tttMsg = document.getElementById('tttMsg');
+let board = Array(9).fill(''); let turn='X'; let over=false;
+function drawTtt(){ttt.innerHTML=''; board.forEach((v,i)=>{const b=document.createElement('button'); b.className='tttCell'; b.textContent=v; b.onclick=()=>playTtt(i); ttt.appendChild(b);});}
+function win(b,p){return [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]].some(l=>l.every(i=>b[i]===p));}
+function playTtt(i){if(over||board[i])return; board[i]=turn; drawTtt(); if(win(board,turn)){tttMsg.textContent=`Player ${turn} wins!`; over=true; return;} if(!board.includes('')){tttMsg.textContent='Draw!'; over=true; return;} turn=turn==='X'?'O':'X'; tttMsg.textContent=`Player ${turn}'s turn.`;}
+function resetTtt(){board=Array(9).fill(''); turn='X'; over=false; tttMsg.textContent='Player X starts.'; drawTtt();}
+resetTtt();
+const riddles=[['What has to be broken before you can use it?','An egg'],['I am tall when young and short when old. What am I?','A candle'],['What gets wetter the more it dries?','A towel'],['What has one eye but cannot see?','A needle'],['What can travel around the world while staying in a corner?','A stamp']]; let rid=0;
+function nextRiddle(){rid=(rid+1)%riddles.length; document.getElementById('riddleBox').textContent=riddles[rid][0]; document.getElementById('riddleAns').textContent='';}
+function showAnswer(){document.getElementById('riddleAns').textContent='Answer: '+riddles[rid][1];}
+nextRiddle();
+const matchGrid=document.getElementById('matchGrid'); const matchMsg=document.getElementById('matchMsg');
+const symbols=['A','A','V','V','E','E','N','N','G','G','R','R','S','S','X','X','L','L','P','P','H','H','M','M','T']; let hidden='A';
+function buildMatch(){matchGrid.innerHTML=''; [...symbols].sort(()=>Math.random()-.5).forEach(s=>{const d=document.createElement('div'); d.className='matchCell'; d.textContent='?'; d.dataset.v=s; d.onclick=()=>{d.textContent=s; if(s===hidden){d.classList.add('found'); matchMsg.textContent='Match found!';} else {matchMsg.textContent='Try again!'; setTimeout(()=>d.textContent='?',450);} }; matchGrid.appendChild(d);});}
+buildMatch();
+function rollDice(){document.getElementById('diceOut').textContent=['⚀','⚁','⚂','⚃','⚄','⚅'][Math.floor(Math.random()*6)];}
+function tossCoin(){document.getElementById('coinOut').textContent=Math.random()<.5?'Heads':'Tails';}
+let secret=Math.floor(Math.random()*10)+1;
+function guessGame(){const g=+document.getElementById('guessIn').value; document.getElementById('guessMsg').textContent=g===secret?'Correct! New number chosen.':g<secret?'Too low.':'Too high.'; if(g===secret) secret=Math.floor(Math.random()*10)+1;}
+let clickTimer=0, clicks=0;
+function startClicker(){clicks=0; document.getElementById('clickOut').textContent='Click the button as many times as you can in 10 seconds.'; const wrap=document.getElementById('clickBtnWrap'); wrap.innerHTML=''; const btn=document.createElement('button'); btn.textContent='CLICK'; btn.onclick=()=>{if(clickTimer>0) clicks++; document.getElementById('clickOut').textContent='Score: '+clicks;}; wrap.appendChild(btn); clickTimer=10; const iv=setInterval(()=>{clickTimer--; if(clickTimer<=0){clearInterval(iv); wrap.innerHTML=''; document.getElementById('clickOut').textContent='Time up! Final score: '+clicks;}},1000);}
+const memCards=['🛡️','🛡️','⚡','⚡','🕷️','🕷️','🔥','🔥'];
+function shuffleMemory(){const arr=[...memCards].sort(()=>Math.random()-.5); const g=document.getElementById('memoryGrid'); g.innerHTML=''; arr.forEach(v=>{const b=document.createElement('button'); b.className='ghost'; b.style.height='54px'; b.textContent='?'; b.onclick=()=>b.textContent=v; g.appendChild(b);});}
+shuffleMemory();
+function randomColor(){const c='#'+Math.floor(Math.random()*16777215).toString(16).padStart(6,'0'); document.getElementById('colorBox').style.background=c;}
+let reactionActive=false, reactionStartTime=0, reactionTimeout=null;
+function reactionStart(){const box=document.getElementById('reactionBox'); box.textContent='Wait for green...'; reactionActive=false; clearTimeout(reactionTimeout); reactionTimeout=setTimeout(()=>{reactionActive=true; reactionStartTime=performance.now(); box.textContent='Tap NOW!'; box.onclick=()=>{if(reactionActive){box.textContent='Reaction: '+Math.round(performance.now()-reactionStartTime)+' ms'; reactionActive=false;}}},Math.random()*2500+1000);}
+const healthTasks=[]; const used=new Set();
+const actions=['Walk for 10 minutes','Drink 2 glasses of water','Do 15 jumping jacks','Stretch your shoulders','Eat one fruit','Take 10 deep breaths','Stand up and move for 2 minutes','Check your posture','Sleep 30 minutes earlier tonight','Avoid sugary snacks for one meal'];
+const places=['today','before lunch','this evening','after work','right now','in the next hour'];
+for(let i=1;i<=10000;i++) healthTasks.push(`Task ${i}: ${actions[i%actions.length]} ${places[i%places.length]}.`);
+function getHealthyTask(){if(used.size===healthTasks.length) used.clear(); let i; do{i=Math.floor(Math.random()*healthTasks.length)}while(used.has(i)); used.add(i); document.getElementById('taskOut').innerHTML='<span class="tag">Healthy Task</span>'+healthTasks[i];}
 </script>
-
 </body>
 </html>
