@@ -100,7 +100,12 @@ iframe{width:100%;min-height:640px;border:0;border-radius:16px;background:white;
   </div>
   <div class="card">
     <h3>Health Calculator</h3>
-    <iframe id="healthFrame" src="https://www.calculator.net/fitness-and-health-calculator.html" title="Fitness and Health Calculators" sandbox="allow-scripts allow-forms allow-same-origin allow-popups" referrerpolicy="no-referrer"></iframe><div class="small" style="margin-top:8px">Restricted to the Fitness and Health Calculators page.</div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px">
+<button class="secondary" id="openHealthBtn" onclick="openHealthSite()">Open Health Calculator in New Tab</button>
+<button class="ghost" onclick="reloadHealthFrame()">Reload Embedded Page</button>
+</div>
+<div class="small" style="margin-bottom:10px">For smoother reading and input, open in a new tab or use the embedded page below.</div>
+<iframe id="healthFrame" src="https://www.calculator.net/fitness-and-health-calculator.html" title="Fitness and Health Calculators" sandbox="allow-scripts allow-forms allow-same-origin allow-popups" referrerpolicy="no-referrer"></iframe><div class="small" style="margin-top:8px">Embedded and restricted to the Fitness and Health Calculators page as far as browser security allows.</div>
   </div>
 </div>
 <div class="ring"></div></section>
@@ -148,14 +153,18 @@ function lockHealthFrame(){
   if(!frame) return;
   const allowed='https://www.calculator.net/fitness-and-health-calculator.html';
   frame.addEventListener('load',()=>{
-    try{
-      const current=frame.contentWindow.location.href;
-      if(current && current!==allowed){frame.contentWindow.location.replace(allowed);}
-    }catch(e){
-      try{frame.contentWindow.location.replace(allowed);}catch(_){}
-    }
+    setTimeout(()=>{
+      try{
+        const current=frame.contentWindow.location.href;
+        if(current && current!==allowed){frame.contentWindow.location.replace(allowed);}
+      }catch(e){
+        try{frame.contentWindow.location.replace(allowed);}catch(_){}
+      }
+    }, 1200);
   });
 }
+function openHealthSite(){window.open('https://www.calculator.net/fitness-and-health-calculator.html','_blank','noopener,noreferrer');}
+function reloadHealthFrame(){const f=document.getElementById('healthFrame'); if(f) f.src='https://www.calculator.net/fitness-and-health-calculator.html';}
 lockHealthFrame();
 
 </script>
