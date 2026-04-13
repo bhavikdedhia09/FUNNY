@@ -2,17 +2,16 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Cyber Hunt Pro</title>
+<title>Cyber Hunt Pro Ultimate</title>
 
 <style>
 body {
-  background: #020617;
-  color: #00ffcc;
+  background: radial-gradient(circle, #1a0000, #000);
+  color: #ffcc00;
   font-family: monospace;
   text-align: center;
 }
-
-h1 { text-shadow: 0 0 10px #00ffcc; }
+h1 { text-shadow: 0 0 15px red; }
 
 .grid {
   display: grid;
@@ -21,203 +20,205 @@ h1 { text-shadow: 0 0 10px #00ffcc; }
   justify-content: center;
   margin: 20px;
 }
-
 .cell {
-  width: 45px;
-  height: 45px;
-  border: 1px solid #00ffcc;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
+  width:45px;height:45px;
+  border:1px solid #ff3b3b;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;background:#0a0a0a;
 }
+.selected { background:#00ffff;color:black;}
+.found { background:#ffcc00;color:black;}
 
-.selected { background: #22c55e; color:black; }
-.found { background: #ff00ff; color:white; }
-
-button {
-  padding: 10px;
-  margin: 5px;
-  cursor: pointer;
-}
 </style>
 </head>
 
 <body>
 
-<h1>🔐 CYBER HUNT PRO</h1>
+<h1>🤖 IRON CYBER HUNT ULTIMATE</h1>
 
 <div>
-  ⏱ <span id="timer">60</span>s |
-  🏆 <span id="score">0</span>
+Level: <span id="level">easy</span> |
+⏱ <span id="timer">60</span>s |
+🏆 <span id="score">0</span>
 </div>
 
-<select id="difficulty">
-  <option value="easy">Easy</option>
-  <option value="medium">Medium</option>
-  <option value="hard">Hard</option>
-  <option value="expert">Expert</option>
-  <option value="insane">Insane</option>
-</select>
-
-<button onclick="startGame()">New Game</button>
+<button onclick="startGame()">Start / Restart</button>
 
 <div id="grid" class="grid"></div>
-
-<h3>Words</h3>
 <div id="wordList"></div>
 
 <script>
-const SIZE = 10;
-let grid = [];
-let selectedCells = [];
-let words = [];
-let score = 0;
-let timer = 60;
-let interval;
+const SIZE=10;
 
-const WORDS = {
-  easy: ["HACK","DATA","BUG","SAFE"],
-  medium: ["MALWARE","PHISHING","ENCRYPT"],
-  hard: ["RANSOMWARE","FIREWALL","EXPLOIT"],
-  expert: ["STEGANOGRAPHY","HASHFUNCTION"],
-  insane: ["ADVANCEDPERSISTENTTHREAT"]
+const LEVELS=["easy","medium","hard","expert","insane"];
+
+const WORDS={
+easy:["HACK","DATA","BUG","SAFE"],
+medium:["MALWARE","PHISHING","ENCRYPT"],
+hard:["RANSOMWARE","FIREWALL","EXPLOIT"],
+expert:["STEGANOGRAPHY","HASHFUNCTION"],
+insane:["ADVANCEDPERSISTENTTHREAT"]
 };
 
-const directions = [[0,1],[1,0],[1,1],[-1,1]];
+let levelIndex=0;
+let grid=[],selected=[],words=[],foundWords=[];
+let score=0,timer=60,interval;
+let dragging=false;
 
-function shuffle(arr) {
-  return [...arr].sort(() => Math.random() - 0.5);
+const dirs=[[0,1],[1,0],[1,1],[-1,1]];
+
+function shuffle(a){return [...a].sort(()=>Math.random()-0.5);}
+
+function createGrid(){
+ grid=Array.from({length:SIZE},()=>Array(SIZE).fill(""));
 }
 
-function createGrid() {
-  grid = Array.from({length: SIZE}, () => Array(SIZE).fill(""));
-}
+function placeWord(word){
+ let tries=0;
+ while(tries<100){
+  tries++;
+  let d=dirs[Math.floor(Math.random()*dirs.length)];
+  let r=Math.floor(Math.random()*SIZE);
+  let c=Math.floor(Math.random()*SIZE);
+  let ok=true;
 
-function placeWord(word) {
-  let attempts = 0;
-
-  while (attempts < 100) {
-    attempts++;
-
-    const dir = directions[Math.floor(Math.random()*directions.length)];
-    const row = Math.floor(Math.random()*SIZE);
-    const col = Math.floor(Math.random()*SIZE);
-
-    let fits = true;
-
-    for (let i=0;i<word.length;i++) {
-      let r = row + i*dir[0];
-      let c = col + i*dir[1];
-
-      if (r<0 || c<0 || r>=SIZE || c>=SIZE || (grid[r][c] && grid[r][c] !== word[i])) {
-        fits = false;
-        break;
-      }
-    }
-
-    if (fits) {
-      for (let i=0;i<word.length;i++) {
-        let r = row + i*dir[0];
-        let c = col + i*dir[1];
-        grid[r][c] = word[i];
-      }
-      return true;
-    }
+  for(let i=0;i<word.length;i++){
+   let nr=r+i*d[0],nc=c+i*d[1];
+   if(nr<0||nc<0||nr>=SIZE||nc>=SIZE||(grid[nr][nc]&&grid[nr][nc]!=word[i])){
+    ok=false;break;
+   }
   }
-  return false;
-}
 
-function placeWords(wordList) {
-  wordList.forEach(w => placeWord(w));
-}
-
-function fillRandom() {
-  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-  for (let i=0;i<SIZE;i++){
-    for (let j=0;j<SIZE;j++){
-      if (!grid[i][j]) {
-        grid[i][j] = chars[Math.floor(Math.random()*chars.length)];
-      }
-    }
+  if(ok){
+   for(let i=0;i<word.length;i++){
+    let nr=r+i*d[0],nc=c+i*d[1];
+    grid[nr][nc]=word[i];
+   }
+   return true;
   }
+ }
+ return false;
 }
 
-function render() {
-  const gridDiv = document.getElementById("grid");
-  gridDiv.innerHTML = "";
+function fillRandom(){
+ let chars="ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+ for(let i=0;i<SIZE;i++){
+  for(let j=0;j<SIZE;j++){
+   if(!grid[i][j]){
+    grid[i][j]=chars[Math.floor(Math.random()*chars.length)];
+   }
+  }
+ }
+}
 
-  grid.forEach((row,r) => {
-    row.forEach((letter,c) => {
-      const cell = document.createElement("div");
-      cell.className = "cell";
-      cell.textContent = letter;
+function render(){
+ let g=document.getElementById("grid");
+ g.innerHTML="";
+ grid.forEach((row,r)=>{
+  row.forEach((l,c)=>{
+   let cell=document.createElement("div");
+   cell.className="cell";
+   cell.textContent=l;
 
-      cell.onmousedown = () => startSelect(cell, r, c);
-      cell.onmouseover = () => dragSelect(cell, r, c);
-      cell.onmouseup = endSelect;
+   cell.onmousedown=()=>startSel(cell,r,c);
+   cell.onmouseover=()=>dragSel(cell,r,c);
 
-      gridDiv.appendChild(cell);
-    });
+   g.appendChild(cell);
   });
+ });
 }
 
-function startSelect(cell, r, c) {
-  selectedCells = [{r,c,cell}];
+function startSel(cell,r,c){
+ dragging=true;
+ selected=[{r,c,cell}];
+ cell.classList.add("selected");
+}
+
+function dragSel(cell,r,c){
+ if(dragging){
+  selected.push({r,c,cell});
   cell.classList.add("selected");
+ }
 }
 
-function dragSelect(cell, r, c) {
-  if (selectedCells.length > 0) {
-    selectedCells.push({r,c,cell});
-    cell.classList.add("selected");
+document.addEventListener("mouseup",endSel);
+
+function endSel(){
+ if(!dragging) return;
+ dragging=false;
+
+ let word=selected.map(x=>grid[x.r][x.c]).join("");
+ let rev=word.split("").reverse().join("");
+
+ if(words.includes(word)||words.includes(rev)){
+   let actual = words.includes(word)?word:rev;
+
+   if(!foundWords.includes(actual)){
+     foundWords.push(actual);
+     score+=10;
+     document.getElementById("score").innerText=score;
+     selected.forEach(x=>x.cell.classList.add("found"));
+   }
+ }
+
+ selected.forEach(x=>x.cell.classList.remove("selected"));
+ selected=[];
+ checkLevelComplete();
+}
+
+function checkLevelComplete(){
+ if(foundWords.length===words.length){
+   levelIndex++;
+   if(levelIndex>=LEVELS.length){
+     alert("🎉 You completed ALL levels! Final Score: "+score);
+     resetGame();
+     return;
+   }
+   alert("🚀 Level Up!");
+   loadLevel();
+ }
+}
+
+function startTimer(){
+ clearInterval(interval);
+ interval=setInterval(()=>{
+  timer--;
+  document.getElementById("timer").innerText=timer;
+
+  if(timer<=0){
+   clearInterval(interval);
+   alert("❌ Failed! Score: "+score);
+   resetGame();
   }
+ },1000);
 }
 
-function endSelect() {
-  const word = selectedCells.map(x => grid[x.r][x.c]).join("");
+function loadLevel(){
+ let level=LEVELS[levelIndex];
+ document.getElementById("level").innerText=level;
 
-  if (words.includes(word)) {
-    score += 10;
-    document.getElementById("score").innerText = score;
-    selectedCells.forEach(x => x.cell.classList.add("found"));
-  }
+ words=shuffle(WORDS[level]).slice(0,5);
+ foundWords=[];
 
-  selectedCells.forEach(x => x.cell.classList.remove("selected"));
-  selectedCells = [];
+ createGrid();
+ words.forEach(w=>placeWord(w));
+ fillRandom();
+
+ document.getElementById("wordList").innerText=words.join(", ");
+ render();
 }
 
-function startTimer() {
-  clearInterval(interval);
-
-  interval = setInterval(() => {
-    timer--;
-    document.getElementById("timer").innerText = timer;
-
-    if (timer <= 0) {
-      clearInterval(interval);
-      alert("Game Over! Score: " + score);
-    }
-  },1000);
+function startGame(){
+ score=0;
+ timer=60;
+ levelIndex=0;
+ document.getElementById("score").innerText=score;
+ loadLevel();
+ startTimer();
 }
 
-function startGame() {
-  const difficulty = document.getElementById("difficulty").value;
-  words = shuffle(WORDS[difficulty]).slice(0, 5);
-
-  createGrid();
-  placeWords(words);
-  fillRandom();
-
-  score = 0;
-  timer = 60;
-
-  document.getElementById("score").innerText = score;
-  document.getElementById("timer").innerText = timer;
-  document.getElementById("wordList").innerText = words.join(", ");
-
-  render();
-  startTimer();
+function resetGame(){
+ startGame();
 }
 
 startGame();
