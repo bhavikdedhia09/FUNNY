@@ -5,38 +5,53 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Avengers Arcade & Health Hub</title>
 <style>
-:root{--bg:#0b1020;--card:#121a33;--accent:#e62429;--accent2:#00d4ff;--text:#eef2ff;--muted:#b7c0e0;--good:#4ade80;--warn:#fbbf24}
-*{box-sizing:border-box} body{margin:0;font-family:Arial,Helvetica,sans-serif;background:radial-gradient(circle at top,#1d2a57 0%,#0b1020 55%,#050816 100%);color:var(--text)}
-header{padding:24px 16px;text-align:center;border-bottom:1px solid rgba(255,255,255,.08)}
-h1{margin:0;font-size:clamp(28px,4vw,54px);letter-spacing:1px;color:#fff;text-shadow:0 0 18px rgba(230,36,41,.4)}
-header p{margin:8px 0 0;color:var(--muted)}
-main{max-width:1200px;margin:0 auto;padding:18px;display:grid;gap:18px}
-.section{background:linear-gradient(180deg,rgba(18,26,51,.96),rgba(9,14,30,.96));border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:18px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
-.section h2{margin:0 0 12px;font-size:24px;color:#fff}
+:root{--bg:#050816;--panel:rgba(11,17,34,.58);--panel2:rgba(255,255,255,.06);--stroke:rgba(255,255,255,.12);--gold:#d6b56d;--gold2:#f7e7b0;--red:#d72638;--blue:#3f6fff;--text:#f4f7ff;--muted:#b6c0da;--glow:0 0 40px rgba(214,181,109,.16)}
+*{box-sizing:border-box} html{scroll-behavior:smooth} body{margin:0;font-family:Inter,Arial,Helvetica,sans-serif;color:var(--text);background:
+radial-gradient(circle at 20% 10%, rgba(63,111,255,.18), transparent 28%),
+radial-gradient(circle at 80% 0%, rgba(214,181,109,.16), transparent 26%),
+linear-gradient(135deg,#02030a 0%,#071024 38%,#0c1022 100%);overflow-x:hidden}
+body:before,body:after{content:'';position:fixed;inset:auto;pointer-events:none;filter:blur(60px);opacity:.7;z-index:-1}
+body:before{width:280px;height:280px;border-radius:50%;background:rgba(214,181,109,.18);top:8%;left:-80px;animation:float 12s ease-in-out infinite}
+body:after{width:340px;height:340px;border-radius:50%;background:rgba(63,111,255,.15);right:-120px;top:55%;animation:float 15s ease-in-out infinite reverse}
+@keyframes float{50%{transform:translateY(22px) translateX(14px) scale(1.04)}}
+header{padding:28px 16px 18px;text-align:center;position:relative}
+header:after{content:'';display:block;width:min(760px,92vw);height:1px;margin:18px auto 0;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+h1{margin:0;font-size:clamp(30px,5vw,62px);letter-spacing:3px;text-transform:uppercase;background:linear-gradient(90deg,#fff,#f7e7b0,#d6b56d,#fff);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:0 0 26px rgba(214,181,109,.12)}
+header p{margin:8px 0 0;color:var(--muted);letter-spacing:.35px}
+.badge{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border:1px solid rgba(214,181,109,.22);border-radius:999px;background:rgba(255,255,255,.04);backdrop-filter:blur(16px);box-shadow:var(--glow);color:var(--gold2);font-size:12px;text-transform:uppercase;letter-spacing:1.6px}
+main{max-width:1380px;margin:0 auto;padding:16px;display:grid;gap:18px}
+.section{position:relative;overflow:hidden;background:linear-gradient(180deg,rgba(12,18,37,.72),rgba(6,9,20,.7));backdrop-filter:blur(20px);border:1px solid var(--stroke);border-radius:24px;padding:18px;box-shadow:0 18px 60px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.04);transform:translateZ(0);transition:transform .35s ease, box-shadow .35s ease, border-color .35s ease}
+.section:hover{transform:translateY(-4px);border-color:rgba(214,181,109,.25);box-shadow:0 24px 70px rgba(0,0,0,.45), 0 0 0 1px rgba(214,181,109,.08), inset 0 1px 0 rgba(255,255,255,.06)}
+.section h2{margin:0 0 12px;font-size:24px;letter-spacing:.6px}
 .grid{display:grid;gap:14px}
-.games{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
-.card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:14px}
-.card h3{margin:0 0 10px;color:#fff}
-button,input{font:inherit}
-button{cursor:pointer;border:none;border-radius:12px;padding:10px 14px;background:var(--accent);color:white;font-weight:700;transition:.2s transform,.2s opacity}
-button:hover{transform:translateY(-1px);opacity:.95}
-button.secondary{background:var(--accent2);color:#04111a}
-button.ghost{background:#24304f}
-#ttt{display:grid;grid-template-columns:repeat(3,78px);gap:8px;justify-content:center;margin:10px 0}
-.tttCell{width:78px;height:78px;font-size:28px;background:#182342;border:1px solid rgba(255,255,255,.08);color:#fff;border-radius:12px}
-#riddleBox{min-height:120px;font-size:18px;line-height:1.45;color:#fff}
+.games{grid-template-columns:repeat(auto-fit,minmax(290px,1fr))}
+.card{position:relative;overflow:hidden;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.03));border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:15px;transition:transform .28s ease, border-color .28s ease, box-shadow .28s ease;animation:rise .8s ease both}
+.card:hover{transform:translateY(-5px) scale(1.01);border-color:rgba(214,181,109,.28);box-shadow:0 16px 40px rgba(0,0,0,.28)}
+.card:before{content:'';position:absolute;inset:-2px;background:linear-gradient(135deg,transparent 20%,rgba(214,181,109,.12),transparent 55%,rgba(63,111,255,.1),transparent 85%);opacity:0;transition:opacity .35s ease;pointer-events:none}
+.card:hover:before{opacity:1}
+.card h3{margin:0 0 10px;font-size:18px;letter-spacing:.3px;color:#fff}
+button,input{font:inherit} input{width:100%;padding:12px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);color:var(--text);outline:none} input::placeholder{color:#90a0c0}
+button{cursor:pointer;border:none;border-radius:14px;padding:11px 15px;background:linear-gradient(135deg,#d6b56d,#f4dfb0 45%,#9f7d2e);color:#1b1202;font-weight:800;letter-spacing:.4px;transition:transform .18s ease, filter .18s ease, box-shadow .18s ease;box-shadow:0 12px 26px rgba(214,181,109,.18)}
+button:hover{transform:translateY(-1px) scale(1.01);filter:saturate(1.08)} button:active{transform:translateY(1px) scale(.99)}
+button.secondary{background:linear-gradient(135deg,#2645ff,#72b7ff);color:#fff} button.ghost{background:rgba(255,255,255,.08);color:#fff;border:1px solid rgba(255,255,255,.1);box-shadow:none}
+#ttt{display:grid;grid-template-columns:repeat(3,84px);gap:10px;justify-content:center;margin:10px 0}
+.tttCell{width:84px;height:84px;font-size:30px;background:radial-gradient(circle at top,rgba(255,255,255,.12),rgba(255,255,255,.04));border:1px solid rgba(255,255,255,.1);color:#fff;border-radius:18px;box-shadow:inset 0 1px 0 rgba(255,255,255,.05)}
+#riddleBox{min-height:120px;font-size:18px;line-height:1.5;color:#fff}
 .small{color:var(--muted);font-size:13px}
-#matchGrid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;max-width:360px}
-.matchCell{aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;background:#182342;border:1px solid rgba(255,255,255,.08);border-radius:10px;font-size:18px;cursor:pointer;user-select:none}
-.matchCell.found{background:rgba(74,222,128,.18);border-color:rgba(74,222,128,.55)}
-.healthWrap{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
-iframe{width:100%;min-height:640px;border:0;border-radius:14px;background:white}
-#taskOut{min-height:72px;padding:12px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08)}
-.tag{display:inline-block;padding:4px 10px;border-radius:999px;background:rgba(230,36,41,.18);color:#fff;border:1px solid rgba(230,36,41,.35);margin:3px 6px 3px 0;font-size:12px}
+#matchGrid{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;max-width:380px}
+.matchCell{aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at top,rgba(255,255,255,.08),rgba(255,255,255,.03));border:1px solid rgba(255,255,255,.1);border-radius:14px;font-size:18px;cursor:pointer;user-select:none;transition:transform .18s ease, background .18s ease}
+.matchCell:hover{transform:scale(1.04)} .matchCell.found{background:linear-gradient(135deg,rgba(214,181,109,.2),rgba(63,111,255,.18));border-color:rgba(214,181,109,.55)}
+.healthWrap{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+iframe{width:100%;min-height:640px;border:0;border-radius:16px;background:white;box-shadow:0 14px 40px rgba(0,0,0,.25)}
+#taskOut{min-height:72px;padding:12px;border-radius:14px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1)}
+.tag{display:inline-block;padding:4px 10px;border-radius:999px;background:rgba(214,181,109,.14);color:#f7e7b0;border:1px solid rgba(214,181,109,.26);margin:3px 6px 3px 0;font-size:12px;letter-spacing:.2px}
+.ring{position:absolute;inset:auto 10px 10px auto;width:140px;height:140px;border-radius:50%;border:1px solid rgba(214,181,109,.16);filter:blur(.2px);box-shadow:0 0 0 1px rgba(255,255,255,.03) inset;animation:spin 28s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
 </style>
 </head>
 <body>
-<header>
+<header><div class="badge">Avengers Premium Collection</div>
 <h1>AVENGERS Arcade & Health Hub</h1>
 <p>Games, health tasks, and fitness tools in one interactive page.</p>
 </header>
@@ -85,10 +100,10 @@ iframe{width:100%;min-height:640px;border:0;border-radius:14px;background:white}
   </div>
   <div class="card">
     <h3>Health Calculator</h3>
-    <iframe src="https://www.calculator.net/fitness-and-health-calculator.html" title="Fitness and Health Calculators"></iframe>
+    <iframe id="healthFrame" src="https://www.calculator.net/fitness-and-health-calculator.html" title="Fitness and Health Calculators" sandbox="allow-scripts allow-forms allow-same-origin allow-popups" referrerpolicy="no-referrer"></iframe><div class="small" style="margin-top:8px">Restricted to the Fitness and Health Calculators page.</div>
   </div>
 </div>
-</section>
+<div class="ring"></div></section>
 </main>
 <script>
 const ttt = document.getElementById('ttt');
@@ -120,10 +135,29 @@ function randomColor(){const c='#'+Math.floor(Math.random()*16777215).toString(1
 let reactionActive=false, reactionStartTime=0, reactionTimeout=null;
 function reactionStart(){const box=document.getElementById('reactionBox'); box.textContent='Wait for green...'; reactionActive=false; clearTimeout(reactionTimeout); reactionTimeout=setTimeout(()=>{reactionActive=true; reactionStartTime=performance.now(); box.textContent='Tap NOW!'; box.onclick=()=>{if(reactionActive){box.textContent='Reaction: '+Math.round(performance.now()-reactionStartTime)+' ms'; reactionActive=false;}}},Math.random()*2500+1000);}
 const healthTasks=[]; const used=new Set();
+const premiumTasks=["Cold plunge for 30 seconds.","Mindful breathing for 1 minute.","Power stretch your neck and back.","Hydrate with a full glass of water.","Take a 5-minute posture reset.","Walk while avoiding your phone.","Do a 20-second plank.","Replace one snack with fruit.","Close your eyes and rest them for 30 seconds.","Do 10 bodyweight squats."];
 const actions=['Walk for 10 minutes','Drink 2 glasses of water','Do 15 jumping jacks','Stretch your shoulders','Eat one fruit','Take 10 deep breaths','Stand up and move for 2 minutes','Check your posture','Sleep 30 minutes earlier tonight','Avoid sugary snacks for one meal'];
 const places=['today','before lunch','this evening','after work','right now','in the next hour'];
-for(let i=1;i<=10000;i++) healthTasks.push(`Task ${i}: ${actions[i%actions.length]} ${places[i%places.length]}.`);
+for(let i=1;i<=10000;i++) healthTasks.push(`Task ${i}: ${actions[i%actions.length]} ${places[i%places.length]}. ${premiumTasks[i%premiumTasks.length]}`);
 function getHealthyTask(){if(used.size===healthTasks.length) used.clear(); let i; do{i=Math.floor(Math.random()*healthTasks.length)}while(used.has(i)); used.add(i); document.getElementById('taskOut').innerHTML='<span class="tag">Healthy Task</span>'+healthTasks[i];}
+
+function pulseCards(){document.querySelectorAll('.card').forEach((c,i)=>{c.style.animationDelay=(i*45)+'ms';});}
+pulseCards();
+function lockHealthFrame(){
+  const frame=document.getElementById('healthFrame');
+  if(!frame) return;
+  const allowed='https://www.calculator.net/fitness-and-health-calculator.html';
+  frame.addEventListener('load',()=>{
+    try{
+      const current=frame.contentWindow.location.href;
+      if(current && current!==allowed){frame.contentWindow.location.replace(allowed);}
+    }catch(e){
+      try{frame.contentWindow.location.replace(allowed);}catch(_){}
+    }
+  });
+}
+lockHealthFrame();
+
 </script>
 </body>
 </html>
